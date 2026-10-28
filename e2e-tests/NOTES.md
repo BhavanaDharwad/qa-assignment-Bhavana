@@ -11,7 +11,7 @@ Additional tests cover UI sign-in for both roles, admin item creation/removal, d
 - **Page objects:** Reusable locators and interactions stay in `support/pages`; tests describe journeys and expected behaviour.
 - **Authentication:** Dedicated tests cover UI sign-in. Other tests use API sign-in to avoid repetition.
 - **Isolation:** State-changing tests reset the default seed before signing in, because reset removes users. One worker prevents conflicting resets of the shared store.
-- **Reliability:** Unique item names avoid seed collisions. Search waits for the debounced response; assertions use automatic waiting rather than fixed sleeps.
+- **Reliability:** Unique item names avoid seed collisions. Search waits for the debounced response; assertions use automatic waiting rather than fixed sleeps. CI starts the production server, so the Playwright web server sets `ENABLE_TEST_ENDPOINTS=true`; without it, `POST /api/test/reset` returns 404.
 - **Diagnostics:** Failure traces and screenshots are retained. Retries are disabled so intermittent failures remain visible.
 
 ## Locators
