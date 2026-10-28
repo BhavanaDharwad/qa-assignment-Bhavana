@@ -94,19 +94,26 @@ export class ITEMS_PAGE {
   }
 
   /**
-   * The search box is debounced, so filling it alone leaves the unfiltered list
-   * on screen. Waits for the filtered response before the list is used.
+   * The search box is debounced, so the list stays stale until the items
+   * response arrives. That wait is registered before the fill.
+   * The current value does not send a request. A blank query omits `q`,
+   * so `searchParams.get("q")` is null.
    */
   async search(name: string) {
+    const input = this.getSearchInput();
+    if ((await input.inputValue()) === name) return;
+
+    const query = name.trim();
     const filtered = this.page.waitForResponse((response) => {
       const url = new URL(response.url());
+      const submitted = url.searchParams.get('q');
       return (
         response.request().method() === 'GET' &&
         url.pathname === '/api/items' &&
-        url.searchParams.get('q') === name.trim()
+        submitted === (query === '' ? null : query)
       );
     });
-    await this.getSearchInput().fill(name);
+    await input.fill(name);
     await filtered;
   }
 
